@@ -40,7 +40,7 @@ The repository is 100% ready when every task in Phases 0 to 6 is done and every 
 | 4 | Dogfood and release v0.1.0 | 2 | 9 | 22% |
 | 5 | v0.2 features | 3 | 11 | 27% |
 | 6 | Release v0.2.0 and community | 0 | 5 | 0% |
-| 7 (backlog) | Backlog | 0 | 4 | 0% |
+| 7 (backlog) | Backlog | 0 | 7 | 0% |
 | **Phases 0 to 6** | **Readiness total** | **56** | **79** | **70%** |
 | Gates | G1 to G10 | 3 | 10 | 30% |
 <!-- PROGRESS:END -->
@@ -226,6 +226,9 @@ Constraint on the two remaining experimental tasks: Gauge never builds or submit
 - [ ] **7.2** Claimable balances, liquidity pool shares and sponsorship analysis.
 - [ ] **7.3** Alert integrations (probably never; JSON and CI cover it).
 - [ ] **7.4** Cross-check issued assets against `stellar.toml` currencies.
+- [ ] **7.35** test(run): an invalid job returns ErrUsage and no report
+- [ ] **7.36** test(run): auditing a nil policy fails before a source is built
+- [ ] **7.37** test(run): no golden report survives without a scenario behind it
 
 ## 6. Dependency map (critical path)
 
