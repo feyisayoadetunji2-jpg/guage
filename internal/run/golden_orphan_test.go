@@ -21,8 +21,13 @@ func TestEveryGoldenHasAScenario(t *testing.T) {
 	var basenames []string
 	for _, n := range names {
 		name := n.Name()
-		base := strings.TrimSuffix(name, ".text.golden")
-		base = strings.TrimSuffix(base, ".json.golden")
+		if !strings.HasSuffix(name, ".golden") {
+			continue
+		}
+		base := strings.TrimSuffix(name, ".golden")
+		for _, format := range []string{".text", ".json", ".markdown"} {
+			base = strings.TrimSuffix(base, format)
+		}
 		basenames = append(basenames, base)
 	}
 	sort.Strings(basenames)

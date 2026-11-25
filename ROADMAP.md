@@ -1,6 +1,6 @@
 # ROADMAP: Gauge
 
-Last updated: 2026-11-25T10:22Z (tasks 7.75 to 7.77: source and policy regression tests added)
+Last updated: 2026-11-25T10:31Z (tasks 7.87 to 7.89: run layer usage errors, nil policy and golden orphans pinned)
 Roadmap version: 3
 
 This file is the single source of truth for remaining work. It is read before every task and updated after every change.
@@ -40,7 +40,7 @@ The repository is 100% ready when every task in Phases 0 to 6 is done and every 
 | 4 | Dogfood and release v0.1.0 | 4 | 9 | 44% |
 | 5 | v0.2 features | 10 | 11 | 90% |
 | 6 | Release v0.2.0 and community | 3 | 5 | 60% |
-| 7 (backlog) | Backlog | 73 | 77 | 94% |
+| 7 (backlog) | Backlog | 76 | 80 | 95% |
 | **Phases 0 to 6** | **Readiness total** | **72** | **80** | **90%** |
 | Gates | G1 to G10 | 8 | 10 | 80% |
 <!-- PROGRESS:END -->
@@ -303,6 +303,9 @@ Constraint on the two remaining experimental tasks: Gauge never builds or submit
 - [x] **7.75** test(policy): scan shipped policies for seed-shaped tokens. S. Deps: none. Done when: `internal/policy/example_seed_test.go` scans `gauge.example.toml` and every regular file under `testdata/policy` with both `containsSeed` and a byte scan, and fails if fewer than two paths are found. (done 2026-11-25: the shipped example and `.gitkeep` are both scanned; a temporary shape-only fixture triggered both checks and was removed.)
 - [x] **7.76** test(source): prove the Horizon client never follows redirects. S. Deps: none. Done when: `internal/source/redirect_test.go` serves a 302 from one listener to a second, exercises both `Account` and `Network`, asserts `ErrStatus`, one source request per operation, zero target requests, and no redirect target in either error. (done 2026-11-25: the test passed; temporarily removing `CheckRedirect` made both operations follow the redirect and the test fail, then the guard was restored.)
 - [x] **7.77** test(source): pin integer-only Retry-After parsing and its cap. S. Deps: none. Done when: `internal/source/retry_after_test.go` directly tables empty, HTTP date, zero, negative, positive, capped and whitespace-padded values, asserts exact durations, non-negative returns and the `maxRetryAfter` ceiling. (done 2026-11-25.)
+- [x] **7.87** test(run): an invalid job returns `ErrUsage` and no report, so a caller cannot print a half-built result. S. Deps: none. Done when: `internal/run/validate_usage_test.go` tables each refused request and asserts the zero report.
+- [x] **7.88** test(run): an audit with a nil policy is a usage error rather than a nil dereference. S. Deps: none. Done when: `internal/run/audit_nil_policy_test.go` drives `Audit` with no policy and asserts `ErrUsage`.
+- [x] **7.89** test(run): every golden in `testdata/golden` belongs to a scenario the suite still runs. S. Deps: none. Done when: `internal/run/golden_orphan_test.go` fails on a golden whose basename no scenario names, so a deleted scenario cannot leave a stale file behind.
 ## 6. Dependency map (critical path)
 
 `0.2, 0.4 -> 1.1 -> 1.4 -> 2.1 -> 2.2, 2.3, 2.5 -> 2.7 -> 2.8 -> 2.9 -> 3.1 to 3.5 -> 3.7 -> 4.1 -> 4.8`
@@ -455,3 +458,4 @@ Newest first. One row per merged change.
 | 2026-10-28 | Owner-authorized scaffold: root brief copies, Go module, package and file placeholders, model and policy declarations, source interface, non-operational CLI, README/CONTRIBUTING/SECURITY/PR-template drafts, structure and decision documentation | 1.1, 1.4, 1.8, 1.10, 1.11, 1.12, D-01 to D-04, D-09, D-10 |
 | 2026-10-28 | First drafts of the full doc set (PRD, ARCHITECTURE, ESSENTIALS, project_structure, AGENTS, CLAUDE, ROADMAP) with a red-team pass | 0.1 |
 | 2026-11-25 | Added direct regression tests for shipped policy seed scanning, Horizon redirect refusal and the integer-only `Retry-After` parser. The redirect test was mutation-checked with `CheckRedirect` removed; the policy scan rejected a temporary shape-only fixture, which was removed. No production behavior changed. | 7.75, 7.76, 7.77 |
+| 2026-11-25 | Tasks 7.87 to 7.89 (closing #205, #206, #207): pin the run layer's edges. Invalid jobs return `ErrUsage` with an empty report, an audit without a policy is a usage error rather than a crash, and a golden with no live scenario fails the suite. |

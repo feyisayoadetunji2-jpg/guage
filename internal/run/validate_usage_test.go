@@ -3,6 +3,7 @@ package run
 import (
 	"context"
 	"errors"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -20,7 +21,12 @@ func TestInvalidJobReturnsErrUsageAndNoReport(t *testing.T) {
 	}{
 		{"no network", func(j *Job) { j.Network = "" }},
 		{"no endpoint", func(j *Job) { j.Endpoints = nil }},
-		{"two endpoints", func(j *Job) { j.Endpoints = append(j.Endpoints, "https://second.example") }},
+		{"the same endpoint twice", func(j *Job) { j.Endpoints = append(j.Endpoints, j.Endpoints[0]) }},
+		{"more endpoints than a comparison can print", func(j *Job) {
+			for i := 0; i <= maxEndpoints; i++ {
+				j.Endpoints = append(j.Endpoints, fmt.Sprintf("https://extra-%d.example", i))
+			}
+		}},
 		{"no accounts", func(j *Job) { j.Accounts = nil }},
 		{"negative concurrency", func(j *Job) { j.Concurrency = -1 }},
 		{"unknown failure threshold", func(j *Job) { j.FailOn = model.Severity(9) }},
